@@ -1,18 +1,19 @@
-const PersonDetail = ({name, number}) => {
+const PersonDetail = ({person, deletePerson}) => {
+  console.log(person)
   return (
   <div>
-    {name} {number}
+    {person.name} {person.number} <button id={person.id} onClick={deletePerson}>delete</button>
   </div>
   )
 }
 
-const Person = ({person, filter}) => {
+const Person = ({person, filter, deletePerson}) => {
   if (filter !== '') {
     if (person.name.toLowerCase().includes(filter.toLowerCase())) {
-      return <PersonDetail name={person.name} number={person.number} />
+      return <PersonDetail person={person} deletePerson={deletePerson}/>
     }
   } else {
-    return <PersonDetail name={person.name} number={person.number} />
+    return <PersonDetail person={person} deletePerson={deletePerson}/>
   }
 }
 
