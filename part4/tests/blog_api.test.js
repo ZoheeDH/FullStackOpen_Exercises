@@ -16,80 +16,116 @@ beforeEach(async () => {
   await Promise.all(promiseArray)
 })
 
-test('blogs are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-}, 100000)
+describe('when there is initially some blogs', () => {
+  test('blogs are returned as json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  }, 100000)
 
-test('all blogs are returned', async () => {
-  const blogs = await helper.blogsInDb()
-  expect(blogs).toHaveLength(helper.initialBlogs.length)
+  test('all blogs are returned', async () => {
+    const blogs = await helper.blogsInDb()
+    expect(blogs).toHaveLength(helper.initialBlogs.length)
+  })
+
+  test('the identifier prop is called id', async () => {
+    const blogs = await helper.blogsInDb()
+    expect(blogs[0].id).toBeDefined()
+  })
 })
 
-test('the identifier prop is calles id', async () => {
-  const blogs = await helper.blogsInDb()
-  expect(blogs[0].id).toBeDefined()
+describe('addition of a new blog', () => {
+  test('a new blog can be added', async () => {
+    const newBlog = {
+      title: 'new blog',
+      author: '<NAME>',
+      url: 'newURL',
+      likes: 5
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length+1)
+
+    const titles = blogsAtEnd.map(r => r.title)
+    expect(titles).toContain('new blog')
+  })
+
+  test('the prop likes will be 0 by default', async () => {
+    const newBlog = {
+      title: 'new blog',
+      author: '<NAME>',
+      url: 'newURL'
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const blog = await helper.findBlogByTitle(newBlog.title)
+    expect(blog.likes).toBe(0)
+  })
+
+  test('fails with code 400 if no title or url', async () => {
+    const blogWithoutTitle = {
+      author: '<NAME>',
+      url: 'newURL'
+    }
+    const blogWithoutUrl = {
+      title: 'new blog',
+      author: '<NAME>'
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(blogWithoutTitle)
+      .expect(400)
+
+    await api
+      .post('/api/blogs')
+      .send(blogWithoutUrl)
+      .expect(400)
+  })
 })
 
-test('a new blog can be added', async () => {
-  const newBlog = {
-    title: 'new blog',
-    author: '<NAME>',
-    url: 'newURL',
-    likes: 5
-  }
+describe('deletion of a blog', () => {
+  test('a blog can be deleted', async () => {
+    const blogs = await helper.blogsInDb()
+    const blogToDelete = blogs[0]
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
-
-  const blogsAtEnd = await helper.blogsInDb()
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length+1)
-
-  const titles = blogsAtEnd.map(r => r.title)
-  expect(titles).toContain('new blog')
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+  })
 })
 
-test('the prop likes will be 0 by default', async () => {
-  const newBlog = {
-    title: 'new blog',
-    author: '<NAME>',
-    url: 'newURL'
-  }
+describe('update of a blog', () => {
+  test('likes number can be updated', async () => {
+    const blogs = await helper.blogsInDb()
+    const blogToUpdate = blogs[0]
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    const updatedBlog = {
+      ...blogToUpdate,
+      likes: blogToUpdate.likes + 1
+    }
 
-  const blog = await helper.findOneBlog(newBlog.title)
-  expect(blog.likes).toBe(0)
-})
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-test('blog without title or url is not added', async () => {
-  const blogWithoutTitle = {
-    author: '<NAME>',
-    url: 'newURL'
-  }
-  const blogWithoutUrl = {
-    title: 'new blog',
-    author: '<NAME>'
-  }
-
-  await api
-    .post('/api/blogs')
-    .send(blogWithoutTitle)
-    .expect(400)
-
-  await api
-    .post('/api/blogs')
-    .send(blogWithoutUrl)
-    .expect(400)
+    const blog = await helper.findBlogById(blogToUpdate.id)
+    expect(blog.likes).toBe(updatedBlog.likes)
+  })
 })
 
 afterAll(() => {

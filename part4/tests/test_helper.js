@@ -64,8 +64,13 @@ const nonExistingId = async () => {
   return blog._id.toString()
 }
 
-const findOneBlog = async (title) => {
+const findBlogByTitle = async (title) => {
   const blog = await Blog.findOne({ title })
+  return blog.toJSON()
+}
+
+const findBlogById = async (_id) => {
+  const blog = await Blog.findOne({ _id })
   return blog.toJSON()
 }
 
@@ -73,5 +78,6 @@ module.exports = {
   initialBlogs,
   blogsInDb,
   nonExistingId,
-  findOneBlog
+  findBlogByTitle,
+  findBlogById
 }
