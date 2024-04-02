@@ -27,11 +27,7 @@ usersRouter.post('/', async (req, res, next) => {
 
     res.status(201).json(savedUser)
   } else {
-    const error = {
-      name: 'ValidationError',
-      message: 'Password validation failed: password must be at least 3 characters long'
-    }
-    next(error)
+    return res.status(401).json({ error: 'Password validation failed: password must be at least 3 characters long' })
   }
 })
 
