@@ -42,14 +42,18 @@ const tokenExtractor = (req, res, next) => {
       req.token = decodedToken
     }
   } else {
-    return null //res.status(403).json({ error: 'Access denied' })
+    return res.status(401).json({ error: 'Unauthorized' })
   }
   next()
 }
 
 const userExtractor = async (req, res, next) => {
-  const user = await User.findById(req.token.id)
-  req.user = user
+  if (!req.token) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  } else {
+    const user = await User.findById(req.token.id)
+    req.user = user
+  }
   next()
 }
 
