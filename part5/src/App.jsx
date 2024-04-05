@@ -18,7 +18,7 @@ const App = () => {
       blogService.getAll().then(blogs =>
         setBlogs( blogs )
       )
-    }  
+    }
   }, [user])
 
   useEffect(() => {
@@ -30,9 +30,9 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async ({username, password}) => {
+  const handleLogin = async ({ username, password }) => {
     try {
-      const user = await loginService.login({username, password})
+      const user = await loginService.login({ username, password })
 
       window.localStorage.setItem(
         'loggedBlogAppUser', JSON.stringify(user)
@@ -121,27 +121,27 @@ const App = () => {
         <NewBlogForm createBlog={handleCreate} />
       </Togglable>
       {blogs
-      .sort((a, b) =>  b.likes - a.likes )
-      .map(blog => 
-        <Blog 
-          key={blog.id}
-          blog={blog}
-          update={handleUpdate}
-          remove={handleRemove}
-          username={user.username}
-        />)}
+        .sort((a, b) =>  b.likes - a.likes )
+        .map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            update={handleUpdate}
+            remove={handleRemove}
+            username={user.username}
+          />)}
     </>
   )
 
   return (
     <div>
       <h2>Blogs</h2>
-      <Notification msg={message} type={messageType}/> 
+      <Notification msg={message} type={messageType}/>
 
       {
-      user === null
-        ? loginForm()
-        : blogList()
+        user === null
+          ? loginForm()
+          : blogList()
       }
     </div>
   )
