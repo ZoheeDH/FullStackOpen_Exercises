@@ -36,19 +36,19 @@ const Blog = ({ blog, update, remove, username }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div style={hideDetails}>
         {blog.title} {blog.author}
         <button onClick={toggleDetails}>view</button>
       </div>
-      <div style={showDetails}>
+      <div style={showDetails} className='blog-details'>
         {blog.title} {blog.author}
         <button onClick={toggleDetails}>hide</button>
         <br/>
         {blog.url}
         <br/>
         likes {blog.likes}
-        <button onClick={updateLikes}>like</button>
+        <button className='like-button' onClick={updateLikes}>like</button>
         <br/>
         {blog.user.username}
         <div style={showRemove}>
