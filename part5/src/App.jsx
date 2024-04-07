@@ -19,7 +19,7 @@ const App = () => {
         setBlogs( blogs )
       )
     }
-  }, [user])
+  }, [user, blogs])
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedBlogAppUser')
@@ -106,14 +106,6 @@ const App = () => {
     }
   }
 
-  const loginForm = () => {
-    return (
-      <Togglable buttonLabel='login' ref={formRef}>
-        <Login handleLogin={handleLogin}/>
-      </Togglable>
-    )
-  }
-
   const blogList = () => (
     <>
       <p>{user.name} logged in <button type='button' onClick={handleLogout}>logout</button></p>
@@ -140,7 +132,7 @@ const App = () => {
 
       {
         user === null
-          ? loginForm()
+          ? <Login handleLogin={handleLogin}/>
           : blogList()
       }
     </div>
