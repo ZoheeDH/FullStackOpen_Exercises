@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux'
-import anecdoteService from '../services/anecdotes'
+import { newAnecdote } from '../reducers/anecdoteReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch()
@@ -7,13 +8,8 @@ const AnecdoteForm = () => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    const newAnecdote = await anecdoteService.createNew(content)
-    dispatch({type: 'anecdotes/newAnecdote', payload: newAnecdote})
-    dispatch({ type: 'notification/setNotification', payload: 'new anecdote successfully created' })
-    setTimeout(() => 
-      dispatch({ type: 'notification/clearNotification' }),
-      5000)
-    
+    dispatch(newAnecdote(content))
+    dispatch(setNotification('new anecdote successfully created', 10))
   }
 
   return (
