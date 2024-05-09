@@ -13,6 +13,9 @@ const App = () => {
     onSuccess: (newAnecdote) => {
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
     },
+    onError: (error) => {
+      dispatch({ type: 'SHOW', message: `${error.response.data.error}` })
+    },
   })
 
   const updateAnecdoteMutation = useMutation({
