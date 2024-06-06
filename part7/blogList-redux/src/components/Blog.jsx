@@ -1,7 +1,12 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { setNotification } from '../reducers/notificationReducer'
+import { likeBlog, removeBlog } from '../reducers/blogsReducer'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, update, remove, username }) => {
+const Blog = ({ blog, username }) => {
+  const dispatch = useDispatch()
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -21,17 +26,28 @@ const Blog = ({ blog, update, remove, username }) => {
     setDetailsVisible(!detailsVisible)
   }
 
-  const updateLikes = async () => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes+1
+  const handleUpdate = async () => {
+    try {
+      await dispatch(likeBlog(blog))
+    } catch (err) {
+      dispatch(setNotification({
+        message: err.response.data.error,
+        type: 'error'
+      }))
     }
-    update(updatedBlog)
   }
 
-  const removeBlog = async () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      remove(blog.id)
+  const handleRemove = async () => {
+    try {
+      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+        await dispatch(removeBlog(blog.id))
+        console.log('delete blog')
+      }
+    } catch (err) {
+      dispatch(setNotification({
+        message: err.response.data.error,
+        type: 'error'
+      }))
     }
   }
 
@@ -48,11 +64,11 @@ const Blog = ({ blog, update, remove, username }) => {
         {blog.url}
         <br/>
         likes {blog.likes}
-        <button className='like-button' onClick={updateLikes}>like</button>
+        <button className='like-button' onClick={handleUpdate}>like</button>
         <br/>
         {blog.user.username}
         <div style={showRemove}>
-          <button id='remove-blog' onClick={removeBlog}>remove</button>
+          <button id='remove-blog' onClick={handleRemove}>remove</button>
         </div>
       </div>
     </div>
@@ -61,8 +77,6 @@ const Blog = ({ blog, update, remove, username }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  update: PropTypes.func.isRequired,
-  remove: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired
 }
 
