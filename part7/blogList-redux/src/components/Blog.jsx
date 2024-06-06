@@ -41,7 +41,6 @@ const Blog = ({ blog, username }) => {
     try {
       if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
         await dispatch(removeBlog(blog.id))
-        console.log('delete blog')
       }
     } catch (err) {
       dispatch(setNotification({

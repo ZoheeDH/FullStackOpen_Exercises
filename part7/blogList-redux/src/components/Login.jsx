@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../reducers/userReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Navigate } from'react-router-dom'
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -28,6 +29,9 @@ const Login = () => {
 
   return (
     <div>
+      {window.localStorage.getItem('loggedBlogAppUser') && (
+        <Navigate to="/" replace={true} />
+      )}
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>

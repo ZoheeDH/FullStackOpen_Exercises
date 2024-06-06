@@ -2,12 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 
-// const initialState = {
-//   token: null,
-//   username: null,
-//   name: null
-// }
-
 const userSlice = createSlice({
   name: 'user',
   initialState: null,
