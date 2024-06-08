@@ -1,19 +1,6 @@
-import { useState, useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
-import userService from '../services/users'
+import { Link, Navigate } from 'react-router-dom'
 
-const Users = () => {
-  const [users, setUsers] = useState([])
-  const user = window.localStorage.getItem('loggedBlogAppUser')
-
-  useEffect( () => {
-    if (user) {
-      userService.getAll().then(usersList =>
-        setUsers(usersList)
-      )
-    }
-  }, [])
-
+const Users = ({ usersList, user }) => {
   return (
     <div>
       {!user && (
@@ -30,9 +17,9 @@ const Users = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map(user =>
+          {usersList.map(user =>
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td><Link to={`/users/${user.id}`}>{user.name}</Link></td>
               <td>{user.blogs.length}</td>
             </tr>
           )}

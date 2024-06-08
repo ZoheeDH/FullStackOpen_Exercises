@@ -3,22 +3,21 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from '../reducers/blogsReducer'
 import Togglable from './Togglable'
 import NewBlogForm from './NewBlogForm'
-import Blog from './Blog'
 import blogService from '../services/blogs'
-import { Navigate, redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-const Home = ({ user }) => {
+const Home = ({ blogs }) => {
   const formRef = useRef()
-  const dispatch = useDispatch()
-  const blogs = useSelector(state => state.blogs)
 
-  useEffect(() => {
-    if (user) {
-      blogService.getAll().then(blogs =>
-        dispatch(initializeBlogs( blogs ))
-      )
-    }
-  }, [user])
+  const listStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
+
+  if (!blogs) return null
 
   return (
     <>
@@ -28,11 +27,11 @@ const Home = ({ user }) => {
       {[...blogs]
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-            username={user.username}
-          />
+          <div style={listStyle} key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title}  {blog.author}
+            </Link>
+          </div>
         )}
     </>
   )
