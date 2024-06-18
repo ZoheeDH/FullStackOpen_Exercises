@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { login } from '../reducers/userReducer'
 import { setNotification } from '../reducers/notificationReducer'
-import { Navigate } from'react-router-dom'
+import { Navigate, useNavigate } from'react-router-dom'
+import { Button, TextField } from '@mui/material'
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -35,26 +36,23 @@ const Login = () => {
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>
-          username:
-          <input
-            id='username'
-            type="text"
+          <TextField
+            label="Username"
             value={username}
-            name='Username'
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
         <div>
-          password:
-          <input
-            id='password'
+          <TextField
+            label="Password"
             type="password"
             value={password}
-            name='Password'
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button id='login-button' type="submit">login</button>
+        <Button variant='contained' color='primary' id='login-button' type="submit">
+          login
+        </Button>
       </form>
     </div>
   )

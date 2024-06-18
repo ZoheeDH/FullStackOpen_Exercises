@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import {  Routes, Route, Navigate, useMatch } from 'react-router-dom'
+import {  Routes, Route, Navigate, useMatch, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import { AppBar, Box, Button, Container, CssBaseline, Divider, List, ListItem, Toolbar, Typography } from '@mui/material'
 import { logout, setUser } from './reducers/userReducer'
 import { initializeBlogs } from './reducers/blogsReducer'
 import Notification from './components/Notification'
@@ -48,34 +49,65 @@ const App = () => {
     }
   }, [user])
 
+  const style = {
+    color: '#fff',
+    padding: 5
+  }
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
     dispatch(logout())
   }
 
   return (
-    <div>
+    <Container>
       <div>
-        <h2>Blogs</h2>
-        {
-          user
-            ? <p>{user.name} logged in <button type='button' onClick={handleLogout}>logout</button></p>
-            : null
-        }
-        <Notification />
-      </div>
+        <div>
+          <Box sx={{ display: 'flex' }}>
+            <CssBaseline />
+            <AppBar component="nav">
+              <Toolbar>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                >
+                Blogs App
+                </Typography>
+                <Divider />
+                <Box>
+                  <Link style={style} to='/'>Blogs</Link>
+                  <Link style={style} to='/users'>Users</Link>
+                  {
+                    user
+                      ? <em>
+                        {user.name} logged in
+                        <Button variant='outlined' sx={{ color: '#fff' }} onClick={handleLogout}>
+                            logout
+                        </Button>
+                      </em>
+                      : <Link style={style} to="/login">Login</Link>
+                  }
+                </Box>
+              </Toolbar>
+            </AppBar>
+          </Box>
+          <h2>Blogs</h2>
+          <Notification />
+        </div>
 
-      <Routes>
-        <Route path='/blogs/:id' element={<Blog blog={blogById} />} />
-        <Route path='/users/:id' element={<User user={userById} />} />
-        <Route path='/users' element={<Users usersList={users} user={user} />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/' element={
-          user ? <Home blogs={blogs} />
-            : <Navigate to={'/login'} replace={true} />
-        } />
-      </Routes>
-    </div>
+        <Routes>
+          <Route path='/blogs/:id' element={<Blog blog={blogById} />} />
+          <Route path='/users/:id' element={<User user={userById} />} />
+          <Route path='/users' element={<Users usersList={users} user={user} />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/' element={
+            user ? <Home blogs={blogs} />
+              : <Navigate to={'/login'} replace={true} />
+          } />
+        </Routes>
+      </div>
+    </Container>
   )
 }
 

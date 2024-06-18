@@ -1,3 +1,5 @@
+import { Paper, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material'
+
 const User = ({ user }) => {
   if (!user) return null
 
@@ -5,11 +7,18 @@ const User = ({ user }) => {
     <div>
       <h2>{user.name}</h2>
       <h3>added blogs</h3>
-      <ul>
-        {user.blogs.map(blog =>
-          <li key={blog.id}>{blog.title} {blog.author}</li>
-        )}
-      </ul>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            {user.blogs.map(blog =>
+              <TableRow key={blog.id}>
+                <TableCell>{blog.title}</TableCell>
+                <TableCell>{blog.author}</TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addNewBlog } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Button, TextField } from '@mui/material'
 
 const NewBlogForm = ({ formRef }) => {
   const dispatch = useDispatch()
@@ -39,36 +40,33 @@ const NewBlogForm = ({ formRef }) => {
       <h2>Add a new blog</h2>
       <form onSubmit={handleCreate}>
         <div>
-          title:
-          <input
+          <TextField
             id='title-input'
             type='text'
             value={blogTitle}
-            name='title'
+            label='Title'
             onChange={({ target }) => setBlogTitle(target.value)}
           />
         </div>
         <div>
-          author:
-          <input
+          <TextField
             id='author-input'
             type='text'
             value={blogAuthor}
-            name='author'
+            label='Author'
             onChange={({ target }) => setBlogAuthor(target.value)}
           />
         </div>
         <div>
-          url:
-          <input
+          <TextField
             id='url-input'
             type='text'
             value={blogUrl}
-            name='url'
+            label='URL'
             onChange={({ target }) => setBlogUrl(target.value)}
           />
         </div>
-        <button id='create-blog' type="submit">create</button>
+        <Button id='create-blog' variant="contained" size="small" type="submit">create</Button>
       </form>
     </div>
   )
