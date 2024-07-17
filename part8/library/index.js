@@ -104,7 +104,7 @@ mongoose.connect(MONGODB_URI)
 const typeDefs = `#graphql
   type User {
     username: String!
-    favoriteGenre: String!
+    favouriteGenre: String!
     id: ID!
   }
   type Token {
@@ -143,7 +143,7 @@ const typeDefs = `#graphql
   ): Author
   createUser(
     username: String!
-    favoriteGenre: String!
+    favouriteGenre: String!
   ): User
   login(
     username: String!
@@ -170,6 +170,7 @@ const resolvers = {
     ,
     allAuthors: async () => await Author.find(),
     me: async (root, args, context) => {
+      console.log(context.currentUser)
       return context.currentUser
     }
   },
@@ -222,10 +223,10 @@ const resolvers = {
           }
         })
       }
-
+      console.log(args)
       const author = await Author.findOne({ name: args.name })
-      author.born = args.setBornTo
       console.log(author)
+      author.born = args.setBornTo
       try {
         await author.save()
       } catch (error) {
@@ -240,7 +241,7 @@ const resolvers = {
       return author
     },
     createUser: async (root, args) => {
-      const user = new User({ username: args.username })
+      const user = new User({ username: args.username, favouriteGenre: args.favouriteGenre })
       return user.save()
         .catch(error => {
           throw new GraphQLError('Creating the user failed', {
