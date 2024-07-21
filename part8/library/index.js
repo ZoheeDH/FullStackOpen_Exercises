@@ -129,6 +129,7 @@ const typeDefs = `#graphql
     allBooks (author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
     me: User
+    allGenres: [String!]!
   }
   type Mutation {
   addBook(
@@ -172,6 +173,9 @@ const resolvers = {
     me: async (root, args, context) => {
       console.log(context.currentUser)
       return context.currentUser
+    },
+    allGenres: async () => {
+      return await Book.distinct('genres')
     }
   },
   Mutation: {
