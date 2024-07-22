@@ -1,12 +1,28 @@
 import { useEffect, useState } from "react";
 import { useApolloClient } from "@apollo/client";
-import { useLazyQuery } from "@apollo/client";
-import { ME } from "./queries";
+import { useLazyQuery, useSubscription } from "@apollo/client";
+import { ALL_BOOKS, BOOK_ADDED, ME } from "./queries";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import Recommend from "./components/Recommend";
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const updateCache = (cache, query, addedBook) => {
+  const uniqueById = (all) => {
+    let books = new Set()
+    return all.filter((item) => {
+      let aux = item.id
+      return books.has(aux) ? false : books.add(aux)
+    })
+  }
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqueById(allBooks.concat(addedBook))
+    }
+  })
+}
 
 const Notify = ({errorMessage}) => {
   if ( !errorMessage ) {
@@ -28,6 +44,16 @@ const App = () => {
   const client = useApolloClient()
 
   const [getUser, result] = useLazyQuery(ME)
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded
+      window.alert(JSON.stringify(
+        `A new book has been added: ${addedBook.title} by ${addedBook.author.name}`
+      ))
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
+    }
+  })
 
   useEffect(() => {
     if (result.data) {
