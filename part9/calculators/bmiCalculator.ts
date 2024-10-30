@@ -21,15 +21,19 @@ const calculateBmi = (height: number, weight: number) => {
   } else {
     throw new Error("Invalid input: height and weight must be positive numbers");
   }
+};
+
+if (require.main === module) {
+  try {
+    const { height, weight } = parseBmiArguments(process.argv);
+    console.log(calculateBmi(height, weight));
+  } catch (error: unknown) {
+    let errorMessage = 'Something went wrong: ';
+    if (error instanceof Error) {
+      errorMessage += error.message;
+    }
+    console.log(errorMessage);
+  }
 }
 
-try {
-  const { height, weight } = parseBmiArguments(process.argv);
-  console.log(calculateBmi(height, weight));
-} catch (error: unknown) {
-  let errorMessage = 'Something went wrong: '
-  if (error instanceof Error) {
-    errorMessage += error.message;
-  }
-  console.log(errorMessage);
-}
+export default calculateBmi;

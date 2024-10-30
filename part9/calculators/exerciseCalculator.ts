@@ -22,7 +22,7 @@ const calculateExercises = (target: number, dailyHours: number[]): Result => {
     } else {
       return { rating: 1, description: "You're struggling to meet your goal, but don't give up!" };
     }
-  }
+  };
 
   return {
     periodLength: totalDays,
@@ -32,16 +32,20 @@ const calculateExercises = (target: number, dailyHours: number[]): Result => {
     ratingDescription: rating().description,
     target,
     average: averageHours,
-  }
-}
+  };
+};
 
-try {
-  const { value1, value2 } = parseExerciseArguments(process.argv);
-  console.log(calculateExercises(value1, value2));
-} catch (error: unknown) {
-  let errorMessage = 'Something went wrong: '
-  if (error instanceof Error) {
-    errorMessage += error.message;
+if (require.main === module) {
+  try {
+    const { value1, value2 } = parseExerciseArguments(process.argv);
+    console.log(calculateExercises(value1, value2));
+  } catch (error: unknown) {
+    let errorMessage = 'Something went wrong: ';
+    if (error instanceof Error) {
+      errorMessage += error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
-}
+}; 
+
+export default calculateExercises;
