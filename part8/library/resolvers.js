@@ -142,11 +142,3 @@ const resolvers = {
 }
 
 module.exports = resolvers
-
-// let authors = [
-//   {
-//     name: 'Fyodor Dostoevsky',
-//     id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
-//     born: 1821
-//   }
-// ]
